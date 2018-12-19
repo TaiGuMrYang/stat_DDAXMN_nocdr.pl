@@ -81,7 +81,7 @@ my @sorted = sort { (stat $a)[9] <=> (stat $b)[9] } glob "AXMNApp.TXMTCall*".$ho
  {
  	if(! exists 	$hash_success{$hash1{$key}})
  	{
- 	$hash_success{$hash1{$key}} =1; 
+ 	$hash_success{$hash1{$key}} =0; 
  	
 }
 
@@ -118,6 +118,20 @@ if(! exists 	$hash_NoAnswer{$hash1{$key}})
  	{
  	
  	 	$hash_NoAnswer{$hash1{$key}} =0; 
+ 	
+}
+
+if(! exists 	$hash_RingNum{$hash1{$key}})
+ 	{
+ 	
+ 	 	$hash_RingNum{$hash1{$key}} =0; 
+ 	
+}
+
+if(! exists 	$hash_NoRingNum{$hash1{$key}})
+ 	{
+ 	
+ 	 	$hash_NoRingNum{$hash1{$key}} =0; 
  	
 }
 
@@ -174,26 +188,34 @@ while( my $filename =shift(@sorted))
 										}
 										elsif($tmp[18] =~/Call/)    #Caller Hang up,Called Hang up
 										{
-											$hash_success{$tmp[21]} = 	$hash_success{$tmp[21]}+1;   
+											$hash_success{$tmp[22]} = 	$hash_success{$tmp[22]}+1;   
 										}
 										else
 										{
-											$hash_fail{$tmp[21]} = $hash_fail{$tmp[21]}+1;
+											$hash_fail{$tmp[22]} = $hash_fail{$tmp[22]}+1;
 											if($tmp[18] =~/Abandon/)
 											{
-												$hash_Abandon{$tmp[21]} = 	$hash_Abandon{$tmp[21]}+1; 
+												$hash_Abandon{$tmp[22]} = 	$hash_Abandon{$tmp[22]}+1; 
 											}
 											elsif($tmp[18] =~/Busy/)    #Caller Hang up,Called Hang up
 											{
-												$hash_Busy{$tmp[21]} = 	$hash_Busy{$tmp[21]}+1;  
+												$hash_Busy{$tmp[22]} = 	$hash_Busy{$tmp[22]}+1;  
 											}
 											elsif($tmp[18] =~/No/)    #Caller Hang up,Called Hang up
 											{
-												$hash_NoAnswer{$tmp[21]} = 	$hash_NoAnswer{$tmp[21]}+1;  
+												$hash_NoAnswer{$tmp[22]} = 	$hash_NoAnswer{$tmp[22]}+1;  
 											}
 											else
 											{
 												}
+										if( $tmp[23]-$tmp[9]>0  )   #判断是否振铃 
+										{
+											$hash_RingNum{$tmp[22]}  = 	$hash_RingNum{$tmp[22]}+1;   
+										}
+										else
+										{
+											$hash_NoRingNum{$tmp[22]} =     $hash_NoRingNum{$tmp[22]}+1;  
+										}
 											
 										}
 
@@ -425,7 +447,7 @@ foreach $key ( sort keys %hash_success)
  	#if ($hash_success{$key}>0)
  	#{
 		
-		print OUTFILESTAT "",$key,"|",$hash_success{$key},"|",$hash_fail{$key},"|",$hash_nobind{$key},"|",$hash_Abandon{$key},"|",$hash_Busy{$key},"|",$hash_NoAnswer{$key},"|",($hash_success{$key})/($hash_success{$key}+$hash_fail{$key})*100,"|",$hash_Bind{$key},"|",$hash_UnBind{$key},"|",$hash_SMSSend{$key},"|",($hash_success{$key}+$hash_fail{$key}),"\n";
+		print OUTFILESTAT "",$key,"|",$hash_success{$key},"|",$hash_fail{$key},"|",$hash_nobind{$key},"|",$hash_Abandon{$key},"|",$hash_Busy{$key},"|",$hash_NoAnswer{$key},"|",($hash_success{$key})/($hash_success{$key}+$hash_fail{$key})*100,"|",$hash_Bind{$key},"|",$hash_UnBind{$key},"|",$hash_SMSSend{$key},"|",$hash_RingNum{$key},"\n";
 	#}
 	$success=$success+$hash_success{$key};
 	$fail=$fail+$hash_Busy{$key}+$hash_Abandon{$key}+$hash_NoAnswer{$key};
