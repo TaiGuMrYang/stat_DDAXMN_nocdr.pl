@@ -74,6 +74,8 @@ my @sorted = sort { (stat $a)[9] <=> (stat $b)[9] } glob "AXMNApp.TXMTCall*".$ho
  my %hash_Abandon;
  my %hash_Busy;
  my %hash_NoAnswer;
+ my $hash_NoRingNum;
+ my $hash_RingNum;
 
  
  
